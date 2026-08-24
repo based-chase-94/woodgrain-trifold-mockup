@@ -11,7 +11,11 @@ Two ways:
 2. **Edit the paths.** The `ART` block at the top of the `<script>` in `index.html`
    maps each panel to a file — point it anywhere you like.
 
-## Panel map — standard letter fold
+## Panel map — letter fold
+
+Both creases bend the same way, so the sheet curls into a "C" and the flap nests
+inside the cover. (A Z-fold, where the creases alternate, would expose that panel on
+the back instead — not what this piece is built for.)
 
 Printed on one sheet. The tuck flap folds in first, the front cover folds over it.
 
@@ -46,9 +50,8 @@ Earlier numbered placeholders are parked in `images/placeholder/`.
 - **Slide to fold / unfold** — scrub the fold from flat open to fully closed
 - **Closed / Cover open / Fully open** — animated presets
 - **Flip over** — spin to the other side
-- **Letter fold / Z-fold** — toggle how the flap folds
 - **Labels** — panel name overlays
 - **Press sheet** — flat imposition view showing both sides of the sheet with fold lines
-- **Drag** to rotate, **scroll** to zoom
+- **Drag** to rotate, **scroll** to zoom (the view auto-fits on load and on resize)
 
 The mockup is view-only — there's no way for a viewer to alter the artwork from the page.

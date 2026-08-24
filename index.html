@@ -199,9 +199,18 @@ function applyFold(){
 /* ---------- orbit / zoom ---------- */
 let rx = -12, ry = -28, zoom = 1;
 const stage = document.getElementById('stage');
+
+function fitZoom(){
+  const css = getComputedStyle(document.documentElement);
+  const pw = parseFloat(css.getPropertyValue('--panel-w'));
+  const ph = parseFloat(css.getPropertyValue('--panel-h'));
+  zoom = Math.min((stage.clientWidth - 40) / (pw * 3),   // widest state = fully open
+                  (stage.clientHeight - 40) / ph,
+                  1.15);
+}
 function applyView(){
-  sheet.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
-  stage.style.transform = `scale(${zoom})`;
+  sheet.style.transform =
+    `scale3d(${zoom},${zoom},${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
 }
 
 let dragging = false, lx = 0, ly = 0;
@@ -244,8 +253,9 @@ document.querySelectorAll('[data-goto]').forEach(b =>
 
 document.getElementById('flip').addEventListener('click', () => { ry += 180; applyView(); });
 document.getElementById('reset').addEventListener('click', () => {
-  rx = -12; ry = -28; zoom = 1; applyView();
+  rx = -12; ry = -28; fitZoom(); applyView();
 });
+window.addEventListener('resize', () => { fitZoom(); applyView(); });
 document.getElementById('labels').addEventListener('click', e => {
   sheet.classList.toggle('labels');
   e.target.classList.toggle('on', sheet.classList.contains('labels'));
@@ -274,7 +284,12 @@ for (const [which, rows] of Object.entries(FLAT)){
   }
 }
 
+// touch devices have no scroll wheel
+if (matchMedia('(pointer: coarse)').matches)
+  document.querySelector('.hint').textContent = 'Drag to rotate';
+
 applyFold();
+fitZoom();
 applyView();
 </script>
 </body>
