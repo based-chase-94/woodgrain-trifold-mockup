@@ -22,9 +22,13 @@
 
   /* ---------- top bar ---------- */
   header{
-    display:flex; flex-wrap:wrap; gap:18px; align-items:center;
-    padding:10px 16px; background:var(--ui); border-bottom:1px solid #2c332f; z-index:5;
+    display:flex; flex-wrap:wrap; gap:14px 18px; align-items:center;
+    padding:12px 16px 14px; background:var(--ui); border-bottom:1px solid #2c332f; z-index:5;
   }
+  /* Arc and other minimal-chrome browsers keep a window-drag strip along the top edge
+     of the web view. Opt out, and keep the slider off the first row so it can't land
+     in that strip and drag the window instead of the handle. */
+  header, header *{ -webkit-app-region:no-drag; app-region:no-drag; }
   header h1{font-size:14px; font-weight:600; margin:0 8px 0 0; letter-spacing:.04em; text-transform:uppercase; opacity:.75}
   .grp{display:flex; gap:6px; align-items:center}
   .grp label{font-size:11px; white-space:nowrap; text-transform:uppercase; letter-spacing:.06em; opacity:.5}
@@ -34,7 +38,8 @@
   }
   button:hover{background:#39423d}
   button.on{background:var(--sage); border-color:var(--sage); color:#1b201e; font-weight:600}
-  input[type=range]{width:180px; accent-color:var(--sage)}
+  .grp.slider{order:9; width:100%; gap:12px}
+  input[type=range]{flex:1; min-width:160px; accent-color:var(--sage)}
   .hint{margin-left:auto; font-size:11px; opacity:.45}
 
   /* ---------- 3D stage ---------- */
@@ -98,7 +103,7 @@
 <header>
   <h1>Trifold Mockup</h1>
 
-  <div class="grp">
+  <div class="grp slider">
     <label>Slide to fold / unfold</label>
     <input id="fold" type="range" min="0" max="1" step="0.005" value="1">
   </div>
@@ -191,26 +196,40 @@ function applyFold(){
   // flap tucks in first, cover closes over it
   const flap  = clamp01(t / 0.55);
   const cover = clamp01((t - 0.45) / 0.55);
+
   document.getElementById('pRight').style.transform =
     `rotateY(${-180 * flap}deg) translateZ(${-1.5 * flap}px)`;
   document.getElementById('pLeft').style.transform =
     `rotateY(${180 * cover}deg) translateZ(${-3 * cover}px)`;
+
+  // How much room the piece takes up right now, measured in panel widths from the
+  // middle panel's left edge. A swung-out wing projects cos(angle) of its width;
+  // once it passes 90 deg it lies over the middle panel and adds nothing.
+  const xMin = -Math.max(0, Math.cos(Math.PI * cover));
+  const xMax = 1 + Math.max(0, Math.cos(Math.PI * flap));
+  spanned = xMax - xMin;
+  centerShift = 0.5 - (xMin + xMax) / 2;   // recentre: the wings are not symmetrical
+
+  fitZoom();
+  applyView();
 }
 
 /* ---------- orbit / zoom ---------- */
-let rx = -12, ry = -28, zoom = 1;
+let rx = -12, ry = -28, zoom = 1, userZoom = 1, spanned = 1, centerShift = 0, shiftPx = 0;
 const stage = document.getElementById('stage');
 
 function fitZoom(){
   const css = getComputedStyle(document.documentElement);
   const pw = parseFloat(css.getPropertyValue('--panel-w'));
   const ph = parseFloat(css.getPropertyValue('--panel-h'));
-  zoom = Math.min((stage.clientWidth - 40) / (pw * 3),   // widest state = fully open
-                  (stage.clientHeight - 40) / ph,
-                  1.15);
+  const fit = Math.min((stage.clientWidth  - 40) / (pw * spanned),
+                       (stage.clientHeight - 40) / ph,
+                       1.15);
+  zoom = fit * userZoom;
+  shiftPx = centerShift * pw * zoom;
 }
 function applyView(){
-  sheet.style.transform =
+  sheet.style.transform = `translateX(${shiftPx}px) ` +
     `scale3d(${zoom},${zoom},${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
 }
 
@@ -231,7 +250,8 @@ window.addEventListener('pointermove', move);
 window.addEventListener('pointerup', up);
 stage.addEventListener('wheel', e => {
   e.preventDefault();
-  zoom = Math.max(0.35, Math.min(2.5, zoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+  userZoom = Math.max(0.4, Math.min(3, userZoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+  fitZoom();
   applyView();
 }, { passive:false });
 
@@ -254,7 +274,7 @@ document.querySelectorAll('[data-goto]').forEach(b =>
 
 document.getElementById('flip').addEventListener('click', () => { ry += 180; applyView(); });
 document.getElementById('reset').addEventListener('click', () => {
-  rx = -12; ry = -28; fitZoom(); applyView();
+  rx = -12; ry = -28; userZoom = 1; fitZoom(); applyView();
 });
 window.addEventListener('resize', () => { fitZoom(); applyView(); });
 document.getElementById('labels').addEventListener('click', e => {
@@ -289,9 +309,7 @@ for (const [which, rows] of Object.entries(FLAT)){
 if (matchMedia('(pointer: coarse)').matches)
   document.querySelector('.hint').textContent = 'Drag to rotate';
 
-applyFold();
-fitZoom();
-applyView();
+applyFold();   // also fits and applies the view
 </script>
 </body>
 </html>

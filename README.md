@@ -58,6 +58,11 @@ of search results.
 - **Flip over** — spin to the other side
 - **Labels** — panel name overlays
 - **Press sheet** — flat imposition view showing both sides of the sheet with fold lines
-- **Drag** to rotate, **scroll** to zoom (the view auto-fits on load and on resize)
+- **Drag** to rotate, **scroll** to zoom (the view auto-fits to whatever the fold is
+  showing, so the closed cover fills the frame and the open spread pulls back)
+
+The slider deliberately sits on its own row rather than at the very top of the page:
+Arc keeps a window-drag strip along the top edge of the web view, and a control up there
+drags the browser window instead of the handle.
 
 The mockup is view-only — there's no way for a viewer to alter the artwork from the page.
