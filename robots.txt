@@ -1,0 +1,3 @@
+# Client review mockup - not for public listing.
+User-agent: *
+Disallow: /

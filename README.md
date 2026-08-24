@@ -45,6 +45,12 @@ width, so the slight per-panel width differences in the exports are ignored here
 
 Earlier numbered placeholders are parked in `images/placeholder/`.
 
+## Search visibility
+
+`robots.txt` disallows all crawlers and the page carries a `noindex, nofollow` meta tag.
+Neither makes the site private — anyone with the URL can open it. They only keep it out
+of search results.
+
 ## Controls
 
 - **Slide to fold / unfold** — scrub the fold from flat open to fully closed
