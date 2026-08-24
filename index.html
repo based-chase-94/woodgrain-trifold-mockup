@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trifold Brochure Mockup</title>
+<style>
+  :root{
+    --cream:#F3EDE1; --slate:#2F3A36; --sage:#7C8C6F; --rust:#B4603C;
+    --panel-w: 220px;                 /* 3.667in panel, scaled */
+    --panel-h: 508px;                 /* 8.5in tall  */
+    --ui:#1b201e;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:#151917; color:var(--cream);
+    font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+
+  /* ---------- top bar ---------- */
+  header{
+    display:flex; flex-wrap:wrap; gap:18px; align-items:center;
+    padding:10px 16px; background:var(--ui); border-bottom:1px solid #2c332f; z-index:5;
+  }
+  header h1{font-size:14px; font-weight:600; margin:0 8px 0 0; letter-spacing:.04em; text-transform:uppercase; opacity:.75}
+  .grp{display:flex; gap:6px; align-items:center}
+  .grp label{font-size:11px; white-space:nowrap; text-transform:uppercase; letter-spacing:.06em; opacity:.5}
+  button{
+    background:#2b322e; color:var(--cream); border:1px solid #3d4641; border-radius:6px;
+    padding:6px 11px; font-size:12px; cursor:pointer;
+  }
+  button:hover{background:#39423d}
+  button.on{background:var(--sage); border-color:var(--sage); color:#1b201e; font-weight:600}
+  input[type=range]{width:180px; accent-color:var(--sage)}
+  .hint{margin-left:auto; font-size:11px; opacity:.45}
+
+  /* ---------- 3D stage ---------- */
+  #stage{
+    flex:1; position:relative; display:flex; align-items:center; justify-content:center;
+    perspective:2400px; cursor:grab; overflow:hidden;
+    background:radial-gradient(ellipse at 50% 40%, #23282600 0%, #0e1211 80%);
+  }
+  #stage.drag{cursor:grabbing}
+  #stage::after{ /* floor shadow */
+    content:""; position:absolute; bottom:9%; left:50%; width:520px; height:44px;
+    transform:translateX(-50%); border-radius:50%;
+    background:radial-gradient(ellipse, rgba(0,0,0,.55), rgba(0,0,0,0) 70%);
+    filter:blur(6px); pointer-events:none;
+  }
+  #sheet{
+    position:relative; width:var(--panel-w); height:var(--panel-h);
+    transform-style:preserve-3d; transition:transform .08s linear;
+  }
+  .panel{
+    position:absolute; top:0; width:var(--panel-w); height:var(--panel-h);
+    transform-style:preserve-3d;
+  }
+  #pMid{left:0}
+  #pLeft{left:calc(var(--panel-w) * -1); transform-origin:100% 50%}
+  #pRight{left:var(--panel-w); transform-origin:0 50%}
+
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden; overflow:hidden;
+    background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,.25);
+  }
+  .face.back{transform:rotateY(180deg)}
+  .face img{width:100%; height:100%; object-fit:cover; display:block; pointer-events:none}
+
+  .tag{   /* small corner pill so it never buries the artwork */
+    position:absolute; top:7px; left:7px; padding:3px 7px; border-radius:4px;
+    background:rgba(20,24,22,.78); color:var(--cream);
+    font-size:9px; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap;
+    opacity:0; transition:opacity .15s; pointer-events:none;
+  }
+  #sheet.labels .tag{opacity:1}
+
+  /* ---------- flat / imposition view ---------- */
+  #flat{flex:1; display:none; overflow:auto; padding:28px; background:#151917}
+  body.flatmode #stage{display:none}
+  body.flatmode #flat{display:block}
+  #flat h2{font-size:11px; letter-spacing:.12em; text-transform:uppercase; opacity:.5; margin:0 0 8px}
+  .spread{display:flex; margin:0 0 26px; box-shadow:0 6px 24px rgba(0,0,0,.5); width:max-content}
+  .spread .cell{position:relative; width:170px; border-right:1px dashed rgba(255,255,255,.45)}
+  .spread .cell:last-child{border-right:0}
+  .spread .cell img{width:100%; height:391px; object-fit:cover; display:block}
+  .spread .cell span{
+    display:block; padding:6px 4px; background:#1b201e; font-size:9px; text-align:center;
+    letter-spacing:.05em; text-transform:uppercase; opacity:.7;
+  }
+  .note{font-size:12px; opacity:.55; max-width:560px; margin:0 0 22px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Trifold Mockup</h1>
+
+  <div class="grp">
+    <label>Slide to fold / unfold</label>
+    <input id="fold" type="range" min="0" max="1" step="0.005" value="1">
+  </div>
+
+  <div class="grp">
+    <button data-goto="1">Closed</button>
+    <button data-goto="0.55">Cover open</button>
+    <button data-goto="0">Fully open</button>
+    <button id="flip">Flip over</button>
+    <button id="reset">Reset view</button>
+  </div>
+
+  <div class="grp">
+    <button id="labels">Labels</button>
+    <button id="view">Press sheet</button>
+  </div>
+
+  <div class="hint">Drag to rotate &middot; scroll to zoom</div>
+</header>
+
+<div id="stage">
+  <div id="sheet">
+    <div class="panel" id="pLeft"></div>
+    <div class="panel" id="pMid"></div>
+    <div class="panel" id="pRight"></div>
+  </div>
+</div>
+
+<div id="flat">
+  <p class="note">How the art sits on the press sheet. The brochure prints on one sheet: the outside spread on
+    the front, the inside spread on the back. Dashed lines are the folds.</p>
+  <h2>Outside of sheet &mdash; front cover on the right</h2>
+  <div class="spread" id="flatOutside"></div>
+  <h2>Inside of sheet &mdash; the full open spread</h2>
+  <div class="spread" id="flatInside"></div>
+</div>
+
+<script>
+/* =========================================================================
+   SWAP ARTWORK HERE.
+   Point these at any image (jpg / png / svg). Keeping the same filenames in
+   /images and just overwriting the files works too - no code change needed.
+   ========================================================================= */
+const ART = {
+  outsideLeft:  'images/trifold-outside_01.jpg', // tuck-in flap  - Lunch Boxes / A La Carte
+  outsideMid:   'images/trifold-outside_02.jpg', // back cover    - We'd love to cater / QR
+  outsideRight: 'images/trifold-outside_03.jpg', // front cover   - Catering Menu
+  insideLeft:   'images/trifold-inside_01.jpg',  // Bagels & Breakfast Platters
+  insideMid:    'images/trifold-inside_02.jpg',  // Hot Breakfast Bundles / Boxes
+  insideRight:  'images/trifold-inside_03.jpg',  // Full Lunch Platters
+};
+
+/* Which artwork lands on which physical face of the folded piece.
+   Reverse of the RIGHT outside panel is the LEFT inside panel, etc. */
+const PANELS = [
+  { el:'pLeft',  front:'insideLeft',  frontTag:'Inside 1 &middot; Bagels &amp; Breakfast',
+                 back:'outsideRight', backTag:'Front cover' },
+  { el:'pMid',   front:'insideMid',   frontTag:'Inside 2 &middot; Hot Breakfast',
+                 back:'outsideMid',   backTag:'Back cover' },
+  { el:'pRight', front:'insideRight', frontTag:'Inside 3 &middot; Lunch Platters',
+                 back:'outsideLeft',  backTag:'Tuck flap &middot; Lunch Boxes' },
+];
+
+/* ---------- build the faces ---------- */
+function addImg(key, img){ img.src = ART[key]; }
+
+for (const p of PANELS){
+  const host = document.getElementById(p.el);
+  for (const side of ['front','back']){
+    const face = document.createElement('div');
+    face.className = 'face ' + side;
+    const img = document.createElement('img');
+    addImg(p[side], img);
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.innerHTML = p[side + 'Tag'];
+    face.append(img, tag);
+    host.appendChild(face);
+  }
+}
+
+/* ---------- folding ---------- */
+const sheet = document.getElementById('sheet');
+const foldEl = document.getElementById('fold');
+let t = 1;                 // 0 = flat open, 1 = fully folded
+
+const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+
+function applyFold(){
+  // flap tucks in first, cover closes over it
+  const flap  = clamp01(t / 0.55);
+  const cover = clamp01((t - 0.45) / 0.55);
+  document.getElementById('pRight').style.transform =
+    `rotateY(${-180 * flap}deg) translateZ(${-1.5 * flap}px)`;
+  document.getElementById('pLeft').style.transform =
+    `rotateY(${180 * cover}deg) translateZ(${-3 * cover}px)`;
+}
+
+/* ---------- orbit / zoom ---------- */
+let rx = -12, ry = -28, zoom = 1;
+const stage = document.getElementById('stage');
+function applyView(){
+  sheet.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+  stage.style.transform = `scale(${zoom})`;
+}
+
+let dragging = false, lx = 0, ly = 0;
+const down = e => { dragging = true; stage.classList.add('drag'); lx = e.clientX; ly = e.clientY; };
+const move = e => {
+  if (!dragging) return;
+  ry += (e.clientX - lx) * 0.45;
+  rx -= (e.clientY - ly) * 0.35;
+  rx = Math.max(-85, Math.min(85, rx));
+  lx = e.clientX; ly = e.clientY;
+  applyView();
+};
+const up = () => { dragging = false; stage.classList.remove('drag'); };
+
+stage.addEventListener('pointerdown', down);
+window.addEventListener('pointermove', move);
+window.addEventListener('pointerup', up);
+stage.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoom = Math.max(0.35, Math.min(2.5, zoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+  applyView();
+}, { passive:false });
+
+/* ---------- controls ---------- */
+foldEl.addEventListener('input', () => { t = +foldEl.value; applyFold(); });
+
+let anim = 0;
+function animateTo(target){
+  cancelAnimationFrame(anim);
+  const step = () => {
+    t += (target - t) * 0.16;
+    if (Math.abs(target - t) < 0.002) t = target; else anim = requestAnimationFrame(step);
+    foldEl.value = t;
+    applyFold();
+  };
+  step();
+}
+document.querySelectorAll('[data-goto]').forEach(b =>
+  b.addEventListener('click', () => animateTo(+b.dataset.goto)));
+
+document.getElementById('flip').addEventListener('click', () => { ry += 180; applyView(); });
+document.getElementById('reset').addEventListener('click', () => {
+  rx = -12; ry = -28; zoom = 1; applyView();
+});
+document.getElementById('labels').addEventListener('click', e => {
+  sheet.classList.toggle('labels');
+  e.target.classList.toggle('on', sheet.classList.contains('labels'));
+});
+document.getElementById('view').addEventListener('click', e => {
+  const on = document.body.classList.toggle('flatmode');
+  e.target.classList.toggle('on', on);
+});
+
+/* ---------- flat imposition view ---------- */
+const FLAT = {
+  outside: [['outsideLeft','Tuck flap &middot; Lunch boxes'], ['outsideMid','Back cover'],   ['outsideRight','Front cover']],
+  inside:  [['insideLeft','Bagels &amp; breakfast'],           ['insideMid','Hot breakfast'], ['insideRight','Lunch platters']],
+};
+for (const [which, rows] of Object.entries(FLAT)){
+  const host = document.getElementById('flat' + which[0].toUpperCase() + which.slice(1));
+  for (const [key, label] of rows){
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    const img = document.createElement('img');
+    addImg(key, img);
+    const span = document.createElement('span');
+    span.innerHTML = label;
+    cell.append(img, span);
+    host.appendChild(cell);
+  }
+}
+
+applyFold();
+applyView();
+</script>
+</body>
+</html>
