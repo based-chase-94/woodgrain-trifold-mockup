@@ -24,8 +24,8 @@ Printed on one sheet. The tuck flap folds in first, the front cover folds over i
 | File | Panel | Content |
 |---|---|---|
 | `trifold-outside_01.jpg` | tuck-in flap | Lunch Boxes / A La Carte |
-| `trifold-outside_02.jpg` | back cover | "We'd love to cater" + QR |
-| `trifold-outside_03.jpg` | front cover | Catering Menu |
+| `newback.jpg` | back cover | "Bring Woodgrain to your next event" + QR |
+| `newfront.jpg` | front cover | Catering Menu |
 
 **Inside of sheet, left to right**
 
@@ -44,6 +44,9 @@ Current art is ~1300 × 3019 px per panel. The mockup renders all three panels a
 width, so the slight per-panel width differences in the exports are ignored here.
 
 Earlier numbered placeholders are parked in `images/placeholder/`.
+
+`images/trifold-outside_01-revised.jpg` is a revised tuck-flap panel that is **not**
+currently wired up — see the note in the panel table above.
 
 ## Search visibility
 

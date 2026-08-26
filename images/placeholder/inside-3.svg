@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 366 850" width="366" height="850">
+  <rect width="366" height="850" fill="#F3EDE1"/>
+  <rect x="18" y="18" width="330" height="814" fill="none" stroke="#B4603C" stroke-width="2" stroke-dasharray="8 8" opacity="0.55"/>
+  <circle cx="183" cy="300" r="58" fill="#B4603C" opacity="0.9"/>
+  <text x="183" y="322" font-family="Helvetica,Arial,sans-serif" font-size="56" font-weight="700" fill="#F3EDE1" text-anchor="middle">6</text>
+  <text x="183" y="420" font-family="Helvetica,Arial,sans-serif" font-size="30" font-weight="700" fill="#2F3A36" text-anchor="middle" letter-spacing="1">INSIDE RIGHT</text>
+  <text x="183" y="456" font-family="Helvetica,Arial,sans-serif" font-size="17" fill="#2F3A36" text-anchor="middle" opacity="0.7">Reverse of tuck flap</text>
+  <rect x="103" y="500" width="160" height="3" fill="#B4603C"/>
+  <text x="183" y="560" font-family="Helvetica,Arial,sans-serif" font-size="14" fill="#2F3A36" text-anchor="middle" opacity="0.55">inside-3.svg</text>
+  <text x="183" y="584" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#2F3A36" text-anchor="middle" opacity="0.4">replace this file to swap art</text>
+  <text x="183" y="800" font-family="Helvetica,Arial,sans-serif" font-size="12" fill="#2F3A36" text-anchor="middle" opacity="0.35">3.667 in x 8.5 in  |  1100 x 2550 px @ 300dpi</text>
+</svg>
