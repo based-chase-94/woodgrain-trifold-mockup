@@ -23,30 +23,27 @@ Printed on one sheet. The tuck flap folds in first, the front cover folds over i
 
 | File | Panel | Content |
 |---|---|---|
-| `trifold-outside_01.jpg` | tuck-in flap | Lunch Boxes / A La Carte |
-| `newback.jpg` | back cover | "Bring Woodgrain to your next event" + QR |
-| `newfront.jpg` | front cover | Catering Menu |
+| `exterior-updated_01.jpg` | tuck-in flap | Lunch Boxes / A La Carte |
+| `exterior-updated_02.jpg` | back cover | "Bring Woodgrain to your next event" + QR |
+| `exterior-updated_03.jpg` | front cover | Catering Menu |
 
 **Inside of sheet, left to right**
 
 | File | Panel | Content | Reverse of |
 |---|---|---|---|
-| `trifold-inside_01.jpg` | inside left | Bagels & Breakfast Platters | front cover |
-| `trifold-inside_02.jpg` | inside middle | Hot Breakfast Bundles / Boxes | back cover |
-| `trifold-inside_03.jpg` | inside right | Full Lunch Platters | tuck flap |
+| `interior-updated_01.jpg` | inside left | Bagels & Breakfast Platters | front cover |
+| `interior-updated_02.jpg` | inside middle | Hot Breakfast Bundles / Boxes | back cover |
+| `interior-updated_03.jpg` | inside right | Full Lunch Platters | tuck flap |
 
 So when you open the front cover you see Bagels & Breakfast on the left and the *outside*
 of the tuck flap (Lunch Boxes / A La Carte) on the right; open the flap and the full
 three-panel food spread is revealed.
 
 Artwork is 3.667 in × 8.5 in per panel (letter sheet, 11 × 8.5 folded in thirds).
-Current art is ~1300 × 3019 px per panel. The mockup renders all three panels at equal
+Current art is ~1300 × 3019 px per panel (`exterior-updated_*` / `interior-updated_*`). The mockup renders all three panels at equal
 width, so the slight per-panel width differences in the exports are ignored here.
 
 Earlier numbered placeholders are parked in `images/placeholder/`.
-
-`images/trifold-outside_01-revised.jpg` is a revised tuck-flap panel that is **not**
-currently wired up — see the note in the panel table above.
 
 ## Search visibility
 
